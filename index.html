@@ -9,8 +9,12 @@
 </head>
 <body>
     <div id="chat">
+        <ul id="messages">
+            <li v-for="message in messages">{{ message }}</li>
+        </ul>
+
         <form @submit="send">
-            <input type="text" id="chat">
+            <input v-model="message" type="text">
             <button>Send</button>
         </form>
     </div>
@@ -23,10 +27,24 @@
         new Vue({
           el: '#chat',
 
+          data() {
+            return {
+              messages: [],
+              message: '',
+            }
+          },
+
+          mounted() {
+            socket.on('chat.message', function(message) {
+              console.log(message);
+              this.messages.push(message);
+            }.bind(this));
+          },
+
           methods: {
             send: function(e) {
-              alert('send');
-
+              socket.emit('chat.message', this.message);
+              this.message = '';
               e.preventDefault();
             }
           }
