@@ -1,8 +1,16 @@
 <?php
 
 use Illuminate\Support\Facades\Redis;
+use App\Events\UserSignedUp;
 
 Route::get('/', function() {
+    event(new UserSignedUp(Request::query('name')));
+
+    return view('welcome');
+});
+
+Route::get('/fire', function() {
+
     // 1. Publish event with Redis
     $data = [
         'event' => 'UserSignedUp',
@@ -10,6 +18,7 @@ Route::get('/', function() {
             'username' => 'JohnDoe'
         ]
     ];
+
     Redis::publish('test-channel', json_encode($data));
 
     return view('welcome');

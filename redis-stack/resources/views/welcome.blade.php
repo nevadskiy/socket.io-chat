@@ -37,8 +37,11 @@
 
           created() {
             console.log('created');
-            socket.on('test-channel:UserSignedUp', function(data) {
+            /** For redis */
+            // socket.on('test-channel:UserSignedUp', function(data) {
+            socket.on('test-channel:App\\Events\\UserSignedUp', function(data) {
               console.log('fired');
+              console.log(data);
               this.users.push(data.username);
             }.bind(this));
           }
